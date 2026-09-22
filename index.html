@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign - Voice-First Financial Tracker</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="SovereignNOBG.png" type="image/jpeg">
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js for 3D Background -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sovereign: {
+                            dark: '#020617',
+                            blue: '#0ea5e9',
+                            glow: '#38bdf8',
+                            gold: '#fbbf24'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh; /* PERBAIKAN 1: Ubah height: 100% menjadi min-height: 100vh */
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            background-color: #020617;
+            color: #ffffff;
+        }
+        
+        /* 3D Canvas Background */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-image: url('bgSovereign.png'); /* Fallback to image */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Smooth section transitions */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<!-- PERBAIKAN 2: Tambahkan flex flex-col min-h-screen agar footer terdorong ke bawah -->
+<body class="antialiased flex flex-col min-h-screen">
+
+    <!-- 3D Background Container -->
+    <div id="canvas-container"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed w-full z-50 glass border-b-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex-shrink-0 cursor-pointer flex items-center gap-3" onclick="navigate('home')">
+                    <!-- Updated App Icon -->
+                    <img src="SovereignNOBG.png" alt="Sovereign Logo" class="w-11 h-11 rounded-xl shadow-lg shadow-sovereign-blue/30 object-cover border border-gray-700/50">
+                    <span class="font-bold text-2xl tracking-wider text-white">SOVEREIGN</span>
+                </div>
+                <div class="flex space-x-6">
+                    <button onclick="navigate('home')" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</button>
+                    <button onclick="navigate('support')" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Support</button>
+                    <a href="#" class="hidden md:inline-block bg-white text-black px-5 py-2 rounded-full text-sm font-semibold hover:bg-gray-200 transition-colors shadow-lg">Get App</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PERBAIKAN 3: Bungkus konten utama dengan flex-1 agar mengambil sisa ruang -->
+    <div class="flex-1 w-full relative z-10 flex flex-col">
+        
+        <!-- MAIN CONTENT: MARKETING URL -->
+        <main id="home" class="page-section active pt-28 pb-20 flex-1">
+            
+            <!-- Hero Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center mt-10 md:mt-20">
+                <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6 drop-shadow-lg">
+                    Own your money.<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-sovereign-blue to-sovereign-gold">Own your choices.</span>
+                </h1>
+                <p class="mt-4 max-w-2xl text-xl text-gray-300 mx-auto font-light">
+                    An accessibility-first financial tracker, built voice-only.
+                </p>
+                <div class="mt-10 flex justify-center gap-4">
+                    <a href="#" class="bg-sovereign-blue hover:bg-sky-400 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-[0_0_20px_rgba(14,165,233,0.4)]">
+                        Download for iOS
+                    </a>
+                </div>
+            </div>
+
+            <!-- Banner Image Showcase -->
+            <div class="max-w-6xl mx-auto px-4 mt-20 relative">
+                <div class="absolute inset-0 bg-sovereign-blue opacity-20 blur-[100px] rounded-full z-0"></div>
+                <!-- Referenced Image: Sovereign Banner.png -->
+                <img src="Sovereign Banner.png" alt="Sovereign App Showcase" class="relative z-10 w-full rounded-2xl shadow-2xl border border-gray-800" onerror="this.src='https://placehold.co/1200x600/050b14/0ea5e9?text=Sovereign+App+Banner'"/>
+            </div>
+
+            <!-- Features Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-32">
+                <div class="text-center mb-16">
+                    <p class="text-sm font-bold tracking-widest text-sovereign-blue uppercase">Accessibility-First • Voice-Only</p>
+                    <h2 class="text-3xl md:text-4xl font-bold mt-2">Everything you need, just a word away.</h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Voice-Only</h3>
+                        <p class="text-gray-400">Just speak. No taps. Record expenses instantly with your voice.</p>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Independence</h3>
+                        <p class="text-gray-400">Manage your money on your own terms, completely screen-free.</p>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Freedom</h3>
+                        <p class="text-gray-400">Siri, voice assistant, or type — the choice is entirely yours.</p>
+                    </div>
+
+                    <!-- Feature 4 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Siri & Accessibility</h3>
+                        <p class="text-gray-400">Works seamlessly with Siri and VoiceOver for full system integration.</p>
+                    </div>
+
+                    <!-- Feature 5 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Financial Summaries</h3>
+                        <p class="text-gray-400">See or hear your balance, income, and expenses instantly.</p>
+                    </div>
+
+                    <!-- Feature 6 -->
+                    <div class="glass p-8 rounded-2xl hover:-translate-y-2 transition-transform duration-300">
+                        <div class="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-sovereign-blue mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Transaction History</h3>
+                        <p class="text-gray-400">Keep track of every detail anytime, and stay in full control.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Feature Image -->
+            <div class="max-w-6xl mx-auto px-4 mt-32 relative">
+                 <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold">Deep Integration. Beautiful Interface.</h2>
+                </div>
+                <!-- Referenced Image: Feature.png -->
+                <img src="Feature.png" alt="Sovereign App Features Detail" class="w-full rounded-2xl shadow-2xl border border-gray-800" onerror="this.src='https://placehold.co/1200x800/050b14/0ea5e9?text=Sovereign+Feature+Details'"/>
+            </div>
+        </main>
+
+        <!-- MAIN CONTENT: SUPPORT URL -->
+        <main id="support" class="page-section pt-32 pb-20 flex-1">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="glass p-10 rounded-3xl border border-gray-700 shadow-2xl">
+                    <h1 class="text-4xl font-bold mb-2">Support & Help Center</h1>
+                    <p class="text-gray-400 mb-10">We're here to help you gain financial independence with Sovereign.</p>
+                    
+                    <div class="space-y-8">
+                        <!-- Contact -->
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-4 text-sovereign-blue">Contact Us</h2>
+                            <p class="text-gray-300 mb-4">Have an issue or a feature request? Reach out directly to our team.</p>
+                            <a href="mailto:support@sovereignapp.com" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg transition-colors border border-white/10">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                support@sovereignapp.com
+                            </a>
+                        </div>
+
+                        <hr class="border-gray-700">
+
+                        <!-- FAQ -->
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-6 text-sovereign-blue">Frequently Asked Questions</h2>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-lg font-medium text-white mb-2">How do I record an expense using my voice?</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Simply activate Siri or tap the speaking button in the app and say, "I spent 50,000 for food." Sovereign will automatically parse the amount, categorize it under 'Food', and log it to your expenses.</p>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-lg font-medium text-white mb-2">How do I undo a mistake?</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">If Sovereign misheard you or you made a mistake, you can simply say "Undo my last transaction" or "Undo that," and it will automatically revert your balance.</p>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-lg font-medium text-white mb-2">Is VoiceOver supported?</h3>
+                                    <p class="text-gray-400 text-sm leading-relaxed">Yes! Sovereign was built as an accessibility-first application. Every single button, label, and list item is fully optimized for VoiceOver to ensure 100% blind and visually impaired accessibility.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- PERBAIKAN 4: Hapus absolute bottom-0 agar footer menyambung di bagian akhir konten -->
+    <footer class="relative z-20 border-t border-gray-800/50 bg-[#020617]/80 backdrop-blur-md mt-auto w-full">
+        <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between">
+            <p class="text-gray-500 text-sm">© 2026 Sovereign Frizzia Darren. All rights reserved.</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <button onclick="navigate('support')" class="text-gray-500 hover:text-white text-sm transition-colors">Privacy Policy</button>
+                <button onclick="navigate('support')" class="text-gray-500 hover:text-white text-sm transition-colors">Terms of Service</button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. SPA Routing Logic ---
+        function navigate(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            // Show target section
+            document.getElementById(pageId).classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Update URL hash without reloading
+            history.pushState(null, null, `#${pageId}`);
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            navigate(hash);
+        });
+
+        // Check initial URL hash on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash === 'support') {
+                navigate('support');
+            }
+        });
+
+        // --- 2. Three.js 3D Background Logic ---
+        window.onload = function () {
+            init3DBackground();
+        };
+
+        function init3DBackground() {
+            const container = document.getElementById('canvas-container');
+            
+            // Setup scene, camera, renderer
+            const scene = new THREE.Scene();
+            // Fog to fade out particles in the distance
+            scene.fog = new THREE.FogExp2(0x020617, 0.001);
+
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.position.z = 500;
+            camera.position.y = 100;
+
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); // Transparent background
+            container.appendChild(renderer.domElement);
+
+            // Create a custom particle wave geometry to mimic "bgSovereign.png" style
+            const geometry = new THREE.BufferGeometry();
+            const particlesCount = 2000;
+            const posArray = new Float32Array(particlesCount * 3);
+            const colorsArray = new Float32Array(particlesCount * 3);
+
+            const color1 = new THREE.Color('#0ea5e9'); // Sovereign blue
+            const color2 = new THREE.Color('#0284c7'); // Darker cyan
+            const color3 = new THREE.Color('#fbbf24'); // Gold accent from lighting
+
+            for (let i = 0; i < particlesCount * 3; i+=3) {
+                // Spread particles across a wide curved plane
+                const x = (Math.random() - 0.5) * 3000;
+                const z = (Math.random() - 0.5) * 2000;
+                
+                // Sine wave math for Y position
+                const y = Math.sin(x * 0.002) * 200 + Math.cos(z * 0.002) * 200;
+
+                posArray[i] = x;
+                posArray[i+1] = y;
+                posArray[i+2] = z;
+
+                // Color interpolation
+                let mixedColor = color1.clone();
+                if (Math.random() > 0.7) {
+                    mixedColor = color2;
+                }
+                if (Math.random() > 0.95) { // Rare gold sparkles
+                    mixedColor = color3;
+                }
+
+                colorsArray[i] = mixedColor.r;
+                colorsArray[i+1] = mixedColor.g;
+                colorsArray[i+2] = mixedColor.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 3,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particlesMesh = new THREE.Points(geometry, material);
+            scene.add(particlesMesh);
+
+            // Mouse interaction
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX) * 0.5;
+                mouseY = (event.clientY - windowHalfY) * 0.5;
+            });
+
+            // Animation Loop
+            let clock = new THREE.Clock();
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const elapsedTime = clock.getElapsedTime();
+
+                targetX = mouseX * 0.1;
+                targetY = mouseY * 0.1;
+
+                // Rotate the entire mesh slowly
+                particlesMesh.rotation.y += 0.0005;
+                
+                // Move camera based on mouse (parallax effect)
+                camera.position.x += (targetX - camera.position.x) * 0.02;
+                camera.position.y += (-targetY - camera.position.y) * 0.02 + 100 * 0.02; // Keep base Y at 100
+                camera.lookAt(scene.position);
+
+                // Animate individual vertices for wave effect
+                const positions = geometry.attributes.position.array;
+                for(let i = 0; i < particlesCount; i++) {
+                    const i3 = i * 3;
+                    const x = positions[i3];
+                    const z = positions[i3+2];
+                    
+                    // Re-apply wave logic with time offset
+                    positions[i3+1] = Math.sin(x * 0.002 + elapsedTime * 0.5) * 200 + Math.cos(z * 0.002 + elapsedTime * 0.3) * 200;
+                }
+                geometry.attributes.position.needsUpdate = true;
+
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+    </script>
+</body>
+</html>
